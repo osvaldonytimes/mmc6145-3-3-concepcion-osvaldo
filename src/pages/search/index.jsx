@@ -20,6 +20,7 @@ export default function Search() {
   const inputDivRef = useRef();
 
   const fetchBooks = (query) => {
+    setFetching(true);
     fetch(
       `https://www.googleapis.com/books/v1/volumes?langRestrict=en&maxResults=16&q=${query}`
     )
@@ -28,18 +29,20 @@ export default function Search() {
         if (data && data.items) {
           setBookSearchResults(data.items);
         }
+        setPreviousQuery(query);
+        setFetching(false);
       })
       .catch((error) => {
         console.error("Error fetching books:", error);
+        setFetching(false);
       });
   };
 
-  // TODO: Submit handler
-  // This function MUST prevent repeat searches if:
-  // fetch has not finished
-  // the query is unchanged
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (fetching || query === previousQuery) {
+      return;
+    }
     fetchBooks(query);
   };
 
