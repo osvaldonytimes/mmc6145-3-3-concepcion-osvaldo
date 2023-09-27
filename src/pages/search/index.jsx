@@ -4,7 +4,7 @@ import styles from "./style.module.css";
 
 export default function Search() {
   // stores search results
-  const [bookSearchResults, setBookSearchResults] = useState();
+  const [bookSearchResults, setBookSearchResults] = useState([]);
   // stores value of input field
   const [query, setQuery] = useState("React");
   // compare to query to prevent repeat API calls
@@ -16,21 +16,37 @@ export default function Search() {
   // https://www.googleapis.com/books/v1/volumes?langRestrict=en&maxResults=16&q=YOUR_QUERY
   // Use a query of "React"
 
-  // TODO: Write a submit handler for the form that fetches data from:
-  // https://www.googleapis.com/books/v1/volumes?langRestrict=en&maxResults=16&q=YOUR_QUERY
-  // and stores the "items" property in the result to the bookSearchResults variable
+  const inputRef = useRef();
+  const inputDivRef = useRef();
+
+  const fetchBooks = (query) => {
+    fetch(
+      `https://www.googleapis.com/books/v1/volumes?langRestrict=en&maxResults=16&q=${query}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data && data.items) {
+          setBookSearchResults(data.items);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching books:", error);
+      });
+  };
+
+  // TODO: Submit handler
   // This function MUST prevent repeat searches if:
   // fetch has not finished
   // the query is unchanged
-
-  const inputRef = useRef();
-  const inputDivRef = useRef();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetchBooks(query);
+  };
 
   return (
     <main className={styles.search}>
       <h1>Book Search</h1>
-      {/* TODO: add an onSubmit handler */}
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={handleSubmit}>
         <label htmlFor="book-search">
           Search by author, title, and/or keywords:
         </label>
@@ -54,7 +70,15 @@ export default function Search() {
           <Loading />
         ) : bookSearchResults?.length ? (
           <div className={styles.bookList}>
-            {/* TODO: render BookPreview components for each search result here based on bookSearchResults */}
+            {bookSearchResults.map((book, index) => (
+              <BookPreview
+                key={index}
+                title={book.volumeInfo?.title}
+                authors={book.volumeInfo?.authors}
+                thumbnail={book.volumeInfo?.imageLinks?.thumbnail}
+                previewLink={book.volumeInfo?.previewLink}
+              />
+            ))}
           </div>
         ) : (
           <NoResults
