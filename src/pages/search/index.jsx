@@ -6,7 +6,7 @@ export default function Search() {
   // stores search results
   const [bookSearchResults, setBookSearchResults] = useState();
   // stores value of input field
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState("React");
   // compare to query to prevent repeat API calls
   const [previousQuery, setPreviousQuery] = useState();
   // used to prevent rage clicks on form submits
@@ -35,12 +35,13 @@ export default function Search() {
           Search by author, title, and/or keywords:
         </label>
         <div ref={inputDivRef}>
-          {/* TODO: add value and onChange props to the input element based on query/setQuery */}
           <input
             ref={inputRef}
             type="text"
             name="book-search"
             id="book-search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
           />
           <button type="submit">Submit</button>
         </div>
