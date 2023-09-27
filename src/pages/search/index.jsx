@@ -1,5 +1,5 @@
 import BookPreview from "../../components/bookPreview";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./style.module.css";
 
 export default function Search() {
@@ -12,9 +12,9 @@ export default function Search() {
   // used to prevent rage clicks on form submits
   const [fetching, setFetching] = useState(false);
 
-  // TODO: When the Search Page loads, use useEffect to fetch data from:
-  // https://www.googleapis.com/books/v1/volumes?langRestrict=en&maxResults=16&q=YOUR_QUERY
-  // Use a query of "React"
+  useEffect(() => {
+    fetchBooks("React");
+  }, []);
 
   const inputRef = useRef();
   const inputDivRef = useRef();
