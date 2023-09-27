@@ -40,7 +40,7 @@ export default function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (fetching || query === previousQuery) {
+    if (fetching || query === previousQuery || query === "") {
       return;
     }
     fetchBooks(query);
